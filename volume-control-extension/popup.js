@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const addSiteBtn = document.getElementById('addSiteBtn');
   const resetVolumeBtn = document.getElementById('resetVolumeBtn');
   const muteBtn = document.getElementById('muteBtn');
+  const mmuteBtnText = document.getElementById('muteBtnText');
   const siteListEl = document.getElementById('siteList');
   const addSiteText = document.getElementById('siteInput');
 
@@ -69,10 +70,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "updateUI") {
       slider.value = message.volume * 100;
-      muteBtn.textContent = message.isMuted ? "Unmute" : "Mute";
+      mmuteBtnText.textContent = message.isMuted ? "Unmute" : "Mute";
       
       if (message.isMuted) {
-        display.textContent = "Muted";
+        mmuteBtnText.textContent = "Muted";
       } else {
         display.textContent = `${Math.round(message.volume * 100)}%`;
       }
@@ -97,8 +98,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   function createStyledDeleteButton(onClick) {
     const button = document.createElement('button');
     button.classList.add(
-      'bg-red-700',
-      'hover:bg-red-800',
+      'bg-gray-400',
+      'hover:bg-gray-500',
       'text-white',
       'font-medium',
       'w-14',

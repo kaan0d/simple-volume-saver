@@ -14,7 +14,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
               },
               args: [volume]
             });
-            chrome.action.setIcon({ path: 'icons/low-volume-128.png', tabId: tabId });
             break;
           }
         }

@@ -10,17 +10,25 @@
   <div class="bg-neutral-900 p-6">
     <h2 class="text-2xl font-bold mb-4">Volume Control</h2>
     <div class="flex items-center mb-4">
-      <input type="range" id="volumeSlider" min="0" max="100" value="100" class="w-full h-2 bg-gray-300 rounded-full appearance-none cursor-pointer">
+      <input type="range" id="volumeSlider" min="0" max="100" value="100" step="1" class="w-full h-2 bg-gray-300 rounded-full appearance-none cursor-pointer">
       <span id="volumeDisplay" class="text-lg font-medium ml-4">%</span>
     </div>
     <div class="flex justify-between">
-      <button id="resetVolumeBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">Reset Volume</button>
-      <button id="muteBtn" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded">Mute</button>
+      <button id="resetVolumeBtn" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-blue-200 to-blue-500 group-hover:from-blue-200 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+          Reset Volume
+        </span>
+      </button>
+      <button id="muteBtn" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-500 to-red-900 group-hover:from-red-500 group-hover:to-red-900 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+        <span id="muteBtnText" class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+          Mute
+        </span>
+      </button>
     </div>
     <div class="mt-6">
       <h3 class="text-lg font-medium mb-2">Settings</h3>
       <div class="flex justify-between items-center">
-        <input type="text" id="siteInput" class="border border-gray-300 rounded-lg px-3 py-2 w-10/12 mr-2" placeholder="Enter website URL">
+        <input type="text" id="siteInput" class="border border-gray-300 rounded-lg px-3 py-2 w-10/12 mr-2" placeholder="Enter website URL or just click Add button">
         <button id="addSiteBtn" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded">Add</button>
       </div>
       <ul id="siteList" class="mt-2"></ul>
