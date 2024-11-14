@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Volume Control</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.16/tailwind.min.css">
+</head>
+<body></body>
+  <div class="bg-neutral-900 p-6">
+    <h2 class="text-2xl font-bold mb-4">Volume Control</h2>
+    <div class="flex items-center mb-4">
+      <input type="range" id="volumeSlider" min="0" max="100" value="100" class="w-full h-2 bg-gray-300 rounded-full appearance-none cursor-pointer">
+      <span id="volumeDisplay" class="text-lg font-medium ml-4">%</span>
+    </div>
+    <div class="flex justify-between">
+      <button id="resetVolumeBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">Reset Volume</button>
+      <button id="muteBtn" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded">Mute</button>
+    </div>
+    <div class="mt-6">
+      <h3 class="text-lg font-medium mb-2">Settings</h3>
+      <div class="flex justify-between items-center">
+        <input type="text" id="siteInput" class="border border-gray-300 rounded-lg px-3 py-2 w-10/12 mr-2" placeholder="Enter website URL">
+        <button id="addSiteBtn" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded">Add</button>
+      </div>
+      <ul id="siteList" class="mt-2"></ul>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
