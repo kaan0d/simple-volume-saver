@@ -25,7 +25,7 @@ This Chrome extension allows users to control the volume of videos and audios on
 
 ## Changes and Improvements
 + Initial Volume Control Setup
-++ Created basic slider functionality for volume control
+ - Created basic slider functionality for volume control
 + + Implemented popup UI with volume display
 + + Added initial site list management
 + Media Detection Improvements
