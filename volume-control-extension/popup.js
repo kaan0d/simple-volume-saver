@@ -57,8 +57,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  function checkAndUpdateSaveButton() {
+    const url = new URL(tab.url);
+  
+    if (url.protocol === 'chrome:' || url.protocol === 'file:') {
+      addSiteBtn.disabled = true;
+      addSiteBtn.style.color = '#8B0000';
+      addSiteBtn.style.borderColor = '#8B0000';
+    } else {
+      addSiteBtn.disabled = false;
+      addSiteBtn.style.backgroundColor = '';
+      addSiteBtn.style.borderColor = '';
+    }
+  }
+
+  checkAndUpdateSaveButton();
+
   addSiteBtn.addEventListener('click', () => {
     const url = new URL(tab.url);
+
+    if (url.protocol === 'chrome:' || url.protocol === 'file:') {
+      return;
+    }
+
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
       siteList[url.origin] = parseInt(volSlider.value);
