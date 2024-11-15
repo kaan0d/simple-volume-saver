@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Volume Control Manager",
     "description": "Automatically lowers volume on selected sites, with manual controls and preset options.",
-    "version": "1.0",
+    "version": "0.3",
     "permissions": ["tabs", "storage", "activeTab", "scripting"],
     "action": {
       "default_popup": "popup.html",

@@ -30,9 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             volSlider.value = volume;
             volDisplay.textContent = `${volume}%`;
           }
-        } catch (error) {
-          console.error('Error getting media volume:', error);
-        }
+        } catch {}
       }
     });
   };
