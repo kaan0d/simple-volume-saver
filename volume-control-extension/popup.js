@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const slider = document.getElementById('volumeSlider');
-  const display = document.getElementById('volumeDisplay');
+  const volSlider = document.getElementById('volumeSlider');
+  const volDisplay = document.getElementById('volumeDisplay');
   const addSiteBtn = document.getElementById('addSiteBtn');
   const resetVolumeBtn = document.getElementById('resetVolumeBtn');
   const siteListEl = document.getElementById('siteList');
@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const url = new URL(tab.url);
       
       if (siteList[url.origin]) {
-        slider.value = siteList[url.origin];
-        display.textContent = `${siteList[url.origin]}%`;
+        volSlider.value = siteList[url.origin];
+        volDisplay.textContent = `${siteList[url.origin]}%`;
       } else {
         try {
           const result = await chrome.scripting.executeScript({
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           
           if (result && result[0]) {
             const volume = result[0].result;
-            slider.value = volume;
-            display.textContent = `${volume}%`;
+            volSlider.value = volume;
+            volDisplay.textContent = `${volume}%`;
           }
         } catch (error) {
           console.error('Error getting media volume:', error);
@@ -45,9 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  slider.addEventListener('input', () => {
-    const volume = slider.value;
-    display.textContent = `${volume}%`;
+  volSlider.addEventListener('input', () => {
+    const volume = volSlider.value;
+    volDisplay.textContent = `${volume}%`;
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (volume) => {
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const url = new URL(tab.url);
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
-      siteList[url.origin] = parseInt(slider.value);
+      siteList[url.origin] = parseInt(volSlider.value);
       chrome.storage.sync.set({ siteList });
       displaySites();
     });
@@ -75,8 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const siteList = data.siteList || {};
       if (siteList[url.origin]) {
         const volume = siteList[url.origin];
-        slider.value = volume;
-        display.textContent = `${volume}%`;
+        volSlider.value = volume;
+        volDisplay.textContent = `${volume}%`;
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (volume) => {
@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           args: [volume]
         });
       } else {
-        slider.value = 100;
-        display.textContent = '100%';
+        volSlider.value = 100;
+        volDisplay.textContent = '100%';
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: () => {
