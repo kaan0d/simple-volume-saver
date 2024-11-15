@@ -68,7 +68,7 @@ input[type=range]:focus::-webkit-slider-thumb {
 }
 
 input[type=range]:active::-webkit-slider-runnable-track {
-  background: #5a5a5a; /* Özel renk */
+  background: #5a5a5a;
   transition: background-color 0.5s ease;
   box-shadow: none;
 }

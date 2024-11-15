@@ -3,22 +3,48 @@ document.addEventListener('DOMContentLoaded', async () => {
   const display = document.getElementById('volumeDisplay');
   const addSiteBtn = document.getElementById('addSiteBtn');
   const resetVolumeBtn = document.getElementById('resetVolumeBtn');
-  const muteBtn = document.getElementById('muteBtn');
-  const muteBtnText = document.getElementById('muteBtnText');
   const siteListEl = document.getElementById('siteList');
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: () => document.querySelector("video, audio")?.volume * 100 || 100
-  }, (result) => {
-    if (result && result[0]) {
-      const volume = Math.round(result[0].result);
-      slider.value = volume;
-      display.textContent = `${volume}%`;
+  
+  const updateVolumeDisplay = async () => {
+    chrome.storage.sync.get(['siteList'], async (data) => {
+      const siteList = data.siteList || {};
+      const url = new URL(tab.url);
+      
+      if (siteList[url.origin]) {
+        slider.value = siteList[url.origin];
+        display.textContent = `${siteList[url.origin]}%`;
+      } else {
+        try {
+          const result = await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => {
+              const media = document.querySelector("video, audio");
+              return media ? Math.round(media.volume * 100) : 100;
+            }
+          });
+          
+          if (result && result[0]) {
+            const volume = result[0].result;
+            slider.value = volume;
+            display.textContent = `${volume}%`;
+          }
+        } catch (error) {
+          console.error('Error getting media volume:', error);
+        }
+      }
+    });
+  };
+
+  await updateVolumeDisplay();
+
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, updatedTab) => {
+    if (tabId === tab.id && changeInfo.audible !== undefined) {
+      updateVolumeDisplay();
     }
   });
-  
+
   slider.addEventListener('input', () => {
     const volume = slider.value;
     display.textContent = `${volume}%`;
@@ -37,19 +63,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const url = new URL(tab.url);
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
-      siteList[url.origin] = slider.value;
+      siteList[url.origin] = parseInt(slider.value);
       chrome.storage.sync.set({ siteList });
       displaySites();
     });
   });
 
-  resetVolumeBtn.addEventListener('click', () => {
+  resetVolumeBtn.addEventListener('click', async () => {
     const url = new URL(tab.url);
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
       if (siteList[url.origin]) {
-        slider.value = siteList[url.origin];
-        display.textContent = `${siteList[url.origin]}%`;
+        const volume = siteList[url.origin];
+        slider.value = volume;
+        display.textContent = `${volume}%`;
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (volume) => {
@@ -57,11 +84,11 @@ document.addEventListener('DOMContentLoaded', async () => {
               media.volume = volume / 100;
             });
           },
-          args: [siteList[url.origin]]
+          args: [volume]
         });
       } else {
         slider.value = 100;
-        display.textContent = `100%`;
+        display.textContent = '100%';
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: () => {
@@ -71,35 +98,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         });
       }
-    });
-  });
-
-  muteBtn.addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          const media = document.querySelector("video, audio");
-          if (!media) return null;
-          
-          const isMuted = media.muted;
-          let volume;
-  
-          if (isMuted) {
-            media.volume = media.mutedVolume || 1;
-            media.muted = false;
-            volume = media.volume;
-          } else {
-            media.mutedVolume = media.volume;
-            media.volume = 0;
-            media.muted = true;
-            volume = 0;
-          }
-  
-          return { volume, isMuted: !isMuted };
-        },
-      });
     });
   });
 

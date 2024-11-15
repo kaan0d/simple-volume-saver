@@ -13,17 +13,19 @@
       <input type="range" id="volumeSlider" min="0" max="100" value="100" step="1" class="form-range flex-grow-1">
       <span id="volumeDisplay" class="fs-6 fw-light ms-3" style="width: 50px; display: inline-block;">%</span>
     </div>    
-    <div class="d-flex justify-content-between">
+    <!-- <div class="d-flex justify-content-between">
       <button id="resetVolumeBtn" class="btn btn-primary btn-sm wider-button">
         <span>Reset Volume</span>
       </button>
+      Mute button (Disabled for now.)
       <button id="muteBtn" class="btn btn-danger btn-sm wide-button">
         <span id="muteBtnText">Mute</span>
       </button>
-    </div>
+    </div> -->
     <div class="mt-4">
       <div class="d-flex align-items-center">
-        <h3 class="fs-6 fw-light mb-2">Saved volumes</h3>
+        <h3 class="fs-6 fw-light mt-1">Saved volumes</h3>
+        <button id="resetVolumeBtn" class="btn btn-outline-secondary btn-sm wider-button ms-auto">Reset Volume</button>
         <button id="addSiteBtn" class="btn btn-outline-light btn-sm wide-button ms-auto">Add</button>
       </div>
       <ul id="siteList" class="list-group mt-2 text-small fw-light"></ul>
