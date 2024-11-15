@@ -4,9 +4,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const addSiteBtn = document.getElementById('addSiteBtn');
   const resetVolumeBtn = document.getElementById('resetVolumeBtn');
   const muteBtn = document.getElementById('muteBtn');
-  const mmuteBtnText = document.getElementById('muteBtnText');
+  const muteBtnText = document.getElementById('muteBtnText');
   const siteListEl = document.getElementById('siteList');
-  const addSiteText = document.getElementById('siteInput');
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.scripting.executeScript({
@@ -14,8 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     func: () => document.querySelector("video, audio")?.volume * 100 || 100
   }, (result) => {
     if (result && result[0]) {
-      slider.value = result[0].result;
-      display.textContent = `${result[0].result}%`;
+      const volume = Math.round(result[0].result);
+      slider.value = volume;
+      display.textContent = `${volume}%`;
     }
   });
   
@@ -39,19 +39,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       const siteList = data.siteList || {};
       siteList[url.origin] = slider.value;
       chrome.storage.sync.set({ siteList });
-      addSiteText.value = '';
       displaySites();
     });
   });
 
   resetVolumeBtn.addEventListener('click', () => {
-    slider.value = 100;
-    display.textContent = `100%`;
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        document.querySelectorAll("video, audio").forEach(media => {
-          media.volume = 1;
+    const url = new URL(tab.url);
+    chrome.storage.sync.get(['siteList'], (data) => {
+      const siteList = data.siteList || {};
+      if (siteList[url.origin]) {
+        slider.value = siteList[url.origin];
+        display.textContent = `${siteList[url.origin]}%`;
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (volume) => {
+            document.querySelectorAll("video, audio").forEach(media => {
+              media.volume = volume / 100;
+            });
+          },
+          args: [siteList[url.origin]]
+        });
+      } else {
+        slider.value = 100;
+        display.textContent = `100%`;
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: () => {
+            document.querySelectorAll("video, audio").forEach(media => {
+              media.volume = 1;
+            });
+          }
         });
       }
     });
@@ -62,55 +79,47 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tab = tabs[0];
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: toggleMute,
+        func: () => {
+          const media = document.querySelector("video, audio");
+          if (!media) return null;
+          
+          const isMuted = media.muted;
+          let volume;
+  
+          if (isMuted) {
+            media.volume = media.mutedVolume || 1;
+            media.muted = false;
+            volume = media.volume;
+          } else {
+            media.mutedVolume = media.volume;
+            media.volume = 0;
+            media.muted = true;
+            volume = 0;
+          }
+  
+          return { volume, isMuted: !isMuted };
+        },
       });
     });
   });
-  
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.type === "updateUI") {
-      slider.value = message.volume * 100;
-      mmuteBtnText.textContent = message.isMuted ? "Unmute" : "Mute";
-      
-      if (message.isMuted) {
-        mmuteBtnText.textContent = "Muted";
-      } else {
-        display.textContent = `${Math.round(message.volume * 100)}%`;
-      }
-    }
-  });
-  
-  function toggleMute() {
-    const media = document.querySelector("video, audio");
-    const isMuted = media.muted;
-    if (isMuted) {
-      media.volume = media.mutedVolume || 1;
-      media.muted = false;
-      chrome.runtime.sendMessage({ type: "updateUI", volume: media.volume, isMuted: false });
-    } else {
-      media.mutedVolume = media.volume;
-      media.volume = 0;
-      media.muted = true;
-      chrome.runtime.sendMessage({ type: "updateUI", volume: 0, isMuted: true });
-    }
-  }
 
   function createStyledDeleteButton(onClick) {
     const button = document.createElement('button');
     button.classList.add(
-      'bg-gray-400',
-      'hover:bg-gray-500',
+      'btn',
+      'btn-dark',
+      'btn-sm',
       'text-white',
-      'font-medium',
-      'w-14',
+      'fw-light',
+      'w-auto',
       'py-1',
       'px-2',
       'rounded',
-      'flex',
-      'items-center',
-      'justify-center',
+      'd-flex',
+      'align-items-center',
+      'justify-content-center',
       'cursor-pointer'
-    );
+    );    
   
     const text = document.createElement('span');
     text.textContent = 'Remove';
@@ -132,8 +141,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         const li = document.createElement('li');
         li.style.display = 'flex'; 
         li.style.justifyContent = 'space-between';
+        li.style.alignItems = 'center';
+        li.classList.add(
+          'rounded',
+          'secondary-background'
+        );
   
         const siteText = document.createElement('span');
+        siteText.classList.add(
+          'text-white',
+          'fw-light',
+          'w-auto',
+          'py-1',
+          'px-2',
+        )
         siteText.textContent = `${simplifiedSite} - ${siteList[site]}%`;
   
         const deleteButton = createStyledDeleteButton(() => {
@@ -149,6 +170,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   
-
   displaySites();
 });
