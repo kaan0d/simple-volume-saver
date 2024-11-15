@@ -25,36 +25,36 @@ This Chrome extension allows users to control the volume of videos and audios on
 
 ## Changes and Improvements
 + Initial Volume Control Setup
- - Created basic slider functionality for volume control
-+ + Implemented popup UI with volume display
-+ + Added initial site list management
+  + Created basic slider functionality for volume control
+  + Implemented popup UI with volume display
+  + Added initial site list management
 + Media Detection Improvements
-+ + Replaced continuous interval checking with event-based solution
-+ + Added tab audio state monitoring using chrome.tabs.onUpdated
-+ + Implemented MutationObserver for detecting new media elements
-+ + Added play event listener for catching dynamic media content
+  + Replaced continuous interval checking with event-based solution
+  + Added tab audio state monitoring using chrome.tabs.onUpdated
+  + Implemented MutationObserver for detecting new media elements
+  + Added play event listener for catching dynamic media content
 + Background Script Optimization
-+ + Added automatic volume display updates
-+ + Implemented storage sync for saved sites
-+ + Added real-time volume level updates
-+ + Fixed percentage display alignment using Bootstrap classes
+  + Added automatic volume display updates
+  + Implemented storage sync for saved sites
+  + Added real-time volume level updates
+  + Fixed percentage display alignment using Bootstrap classes
 + Site Management Features
-+ + Added functionality to save site-specific volumes
-+ + Implemented site list display with remove options
-+ + Added volume reset functionality
-+ + Created styled delete buttons for saved sites
+  + Added functionality to save site-specific volumes
+  + Implemented site list display with remove options
+  + Added volume reset functionality
+  + Created styled delete buttons for saved sites
 + Error Handling & Reliability
-+ + Added checks for existing media elements
-+ + Implemented proper cleanup on page unload
-+ + Added fallback for when no media is found
-+ + Improved error handling for storage operations
+  + Added checks for existing media elements
+  + Implemented proper cleanup on page unload
+  + Added fallback for when no media is found
+  + Improved error handling for storage operations
 + Code Structure Improvements
-+ + Modularized code for better maintainability
-+ + Added async/await for better promise handling
-+ + Improved event listener organization
-+ + Added proper code documentation
+  + Modularized code for better maintainability
+  + Added async/await for better promise handling
+  + Improved event listener organization
+  + Added proper code documentation
 + Performance Optimizations
-+ + Removed unnecessary interval checks
-+ + Optimized DOM queries
-+ + Improved storage usage efficiency
-+ + Added proper cleanup for observers and listeners
+  + Removed unnecessary interval checks
+  + Optimized DOM queries
+  + Improved storage usage efficiency
+  + Added proper cleanup for observers and listeners
