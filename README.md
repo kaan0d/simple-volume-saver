@@ -43,6 +43,8 @@ This Chrome extension allows users to control the volume of videos and audios on
   + Implemented site list display with remove options
   + Added volume reset functionality
   + Created styled delete buttons for saved sites
+  + Added show more button for more than 5 sites saved
+  + Added "Remove all sites" button
 + Error Handling & Reliability
   + Added checks for existing media elements
   + Implemented proper cleanup on page unload

@@ -146,44 +146,148 @@ document.addEventListener('DOMContentLoaded', async () => {
   
     return button;
   }
-  
+
   function displaySites() {
     siteListEl.innerHTML = '';
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
-      for (let site in siteList) {
-        const url = new URL(site);
-        const simplifiedSite = url.hostname.replace('www.', '');
+      const sites = Object.entries(siteList);
+      
+      let isExpanded = false;
+      let isConfirmingDelete = false;
+      
+      const renderSites = (sitesToShow) => {
+        const siteContainer = document.createElement('div');
         
-        const li = document.createElement('li');
-        li.style.display = 'flex'; 
-        li.style.justifyContent = 'space-between';
-        li.style.alignItems = 'center';
-        li.classList.add(
-          'rounded',
-          'secondary-background'
-        );
-  
-        const siteText = document.createElement('span');
-        siteText.classList.add(
-          'text-white',
-          'fw-light',
-          'w-auto',
-          'py-1',
-          'px-2',
-        )
-        siteText.textContent = `${simplifiedSite} - ${siteList[site]}%`;
-  
-        const deleteButton = createStyledDeleteButton(() => {
-          delete siteList[site];
-          chrome.storage.sync.set({ siteList });
-          displaySites();
+        sitesToShow.forEach(([site, volume]) => {
+          const url = new URL(site);
+          const simplifiedSite = url.hostname.replace('www.', '');
+          
+          const li = document.createElement('li');
+          li.style.display = 'flex'; 
+          li.style.justifyContent = 'space-between';
+          li.style.alignItems = 'center';
+          li.classList.add(
+            'rounded',
+            'secondary-background'
+          );
+      
+          const siteText = document.createElement('span');
+          siteText.classList.add(
+            'text-white',
+            'fw-light',
+            'w-auto',
+            'py-1',
+            'px-2',
+          );
+          siteText.textContent = `${simplifiedSite} - ${volume}%`;
+      
+          const deleteButton = createStyledDeleteButton(() => {
+            delete siteList[site];
+            chrome.storage.sync.set({ siteList });
+            displaySites();
+          });
+      
+          li.appendChild(siteText);
+          li.appendChild(deleteButton);
+          siteContainer.appendChild(li);
         });
+        
+        return siteContainer;
+      };
   
-        li.appendChild(siteText);
-        li.appendChild(deleteButton);
-        siteListEl.appendChild(li);
-      }
+      const createDeleteAllButton = () => {
+        const deleteAllContainer = document.createElement('div');
+        deleteAllContainer.classList.add('mt-2');
+  
+        if (!isConfirmingDelete) {
+          const deleteAllButton = document.createElement('button');
+          deleteAllButton.classList.add(
+            'btn',
+            'btn-danger',
+            'btn-sm',
+            'w-100'
+          );
+          deleteAllButton.textContent = 'Remove All Sites';
+          deleteAllButton.addEventListener('click', () => {
+            isConfirmingDelete = true;
+            updateDisplay();
+          });
+          deleteAllContainer.appendChild(deleteAllButton);
+        } else {
+          const confirmButtonsContainer = document.createElement('div');
+          confirmButtonsContainer.classList.add('d-flex', 'gap-2');
+  
+          const yesButton = document.createElement('button');
+          yesButton.classList.add(
+            'btn',
+            'btn-danger',
+            'btn-sm',
+            'flex-grow-1'
+          );
+          yesButton.textContent = 'Yes, Remove All';
+          yesButton.addEventListener('click', () => {
+            chrome.storage.sync.set({ siteList: {} }, () => {
+              isConfirmingDelete = false;
+              isExpanded = false;
+              displaySites();
+            });
+          });
+  
+          const noButton = document.createElement('button');
+          noButton.classList.add(
+            'btn',
+            'btn-secondary',
+            'btn-sm',
+            'flex-grow-1'
+          );
+          noButton.textContent = 'No, Cancel';
+          noButton.addEventListener('click', () => {
+            isConfirmingDelete = false;
+            updateDisplay();
+          });
+  
+          confirmButtonsContainer.appendChild(yesButton);
+          confirmButtonsContainer.appendChild(noButton);
+          deleteAllContainer.appendChild(confirmButtonsContainer);
+        }
+  
+        return deleteAllContainer;
+      };
+  
+      const updateDisplay = () => {
+        siteListEl.innerHTML = '';
+        
+        const sitesToShow = isExpanded ? sites : sites.slice(0, 5);
+        const siteContainer = renderSites(sitesToShow);
+        siteListEl.appendChild(siteContainer);
+  
+        if (isExpanded) {
+          siteListEl.appendChild(createDeleteAllButton());
+        }
+  
+        if (sites.length > 5) {
+          const showMoreButton = document.createElement('button');
+          showMoreButton.classList.add(
+            'btn',
+            'btn-outline-secondary',
+            'btn-sm',
+            'w-100',
+            'mt-2'
+          );
+          showMoreButton.textContent = isExpanded ? 'Hide' : 'Show More';
+          
+          showMoreButton.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            isConfirmingDelete = false;
+            updateDisplay();
+          });
+          
+          siteListEl.appendChild(showMoreButton);
+        }
+      };
+  
+      updateDisplay();
     });
   }
   
