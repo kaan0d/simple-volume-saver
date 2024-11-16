@@ -15,7 +15,7 @@ This Chrome extension allows users to control the volume of videos and audios on
 + Remove Sites: Remove saved volume settings for specific sites.
 
 ## TODO:
-+ Jump to any tab that is playing audio with just one click (Maybe)
++ Jump to any tab that is playing audio (Maybe)
 + Boost the volume up to 300% (Maybe)
 + ~~Add extra bass to your music with a bass boost feature~~ (Won't be made.)
 + ~~Complete UI overhaul~~
