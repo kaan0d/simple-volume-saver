@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Volume Control Manager",
+    "name": "Simple Volume Saver",
     "description": "Automatically lowers volume on selected sites, with manual controls and preset options.",
     "version": "0.3",
     "permissions": ["tabs", "storage", "activeTab", "scripting"],
