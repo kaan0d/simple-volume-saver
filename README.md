@@ -22,6 +22,8 @@ This Chrome extension allows users to control the volume of videos and audios on
 + ~~Reset button not setting volume to saved values.~~
 + ~~Mute button resets itself if page unfocused and focused again.~~ (Mute button is removed.)
 + ~~Mute button's and percentage text doesn't change when media is muted.~~
++ YouTube volume returns to normal when the window is out of focus.
++ Dailymotion's volume doesn't work.
 
 ## Changes and Improvements
 + Initial Volume Control Setup
