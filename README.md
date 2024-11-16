@@ -1,6 +1,12 @@
 # Volume Control Chrome Extension
 This Chrome extension allows users to control the volume of videos and audios on web pages. The extension provides several features like adjusting volume through a slider, muting/unmuting, and saving volume settings for specific sites.
 
+![image](https://github.com/user-attachments/assets/83ec4e79-e0b4-4a0a-8e98-e50ce854c565)
+![image](https://github.com/user-attachments/assets/359bf765-e9c1-4d70-a5aa-a6c7f8e324c4)
+![image](https://github.com/user-attachments/assets/c7c46e2c-f9a2-47da-8be0-35e1abef8413)
+![image](https://github.com/user-attachments/assets/218570fb-17f2-4293-ae2a-8f2984391640)
+
+
 ## Features:
 + Volume Slider: Adjust the volume of the media (audio/video) elements on the active page.
 + ~~Mute/Unmute: Toggle the mute state for the media elements.~~
