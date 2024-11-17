@@ -4,10 +4,26 @@ This Chrome extension allows users to control the audio volume of media (video a
 ## How It Works  
 This extension acts as a media controller. If a web page does not have a dedicated audio control mechanism, the extension can adjust the volume directly. However, on websites with custom-built audio controllers, the extension may not work as expected due to conflicts with the site's proprietary controls.  
 
-![image](https://github.com/user-attachments/assets/83ec4e79-e0b4-4a0a-8e98-e50ce854c565)
-![image](https://github.com/user-attachments/assets/359bf765-e9c1-4d70-a5aa-a6c7f8e324c4)
-![image](https://github.com/user-attachments/assets/c7c46e2c-f9a2-47da-8be0-35e1abef8413)
-![image](https://github.com/user-attachments/assets/218570fb-17f2-4293-ae2a-8f2984391640)
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/83ec4e79-e0b4-4a0a-8e98-e50ce854c565" width="200" alt="Main Interface">
+      <p align="center"><b>Main Interface</b></p>
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/359bf765-e9c1-4d70-a5aa-a6c7f8e324c4" width="200" alt="Saved Sites List">
+      <p align="center"><b>Saved Sites List</b></p>
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/c7c46e2c-f9a2-47da-8be0-35e1abef8413" width="200" alt="Reset Volume Button">
+      <p align="center"><b>Show more/Hide</b></p>
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/218570fb-17f2-4293-ae2a-8f2984391640" width="200" alt="Remove All Sites">
+      <p align="center"><b>Remove All Sites</b></p>
+    </td>
+  </tr>
+</table>
 
 ## Features:
 + Volume Slider: Adjust the volume of media (audio/video) elements on the active page.
