@@ -1,4 +1,4 @@
-# Volume Control Chrome Extension
+# Simple Volume Saver Chrome Extension
 This Chrome extension allows users to control the audio volume of media (video and audio) elements on web pages. Users can adjust the volume via a slider, view the current volume percentage, and save custom volume settings for specific websites. It also restores saved volume levels automatically whenever the user revisits a site. The extension is designed to work seamlessly unless the website uses highly customized audio controls, which might limit its functionality.
 
 ## How It Works  
