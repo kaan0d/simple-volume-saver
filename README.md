@@ -26,10 +26,10 @@ This extension acts as a media controller. If a web page does not have a dedicat
 </table>
 
 ## Features:
-+ Volume Slider: Adjust the volume of media (audio/video) elements on the active page.
-+ Save Site Settings: Save custom volume levels for specific sites, ensuring they persist across sessions.
-+ Reset Volume: Reset the volume to either the default value (100%) or the saved value for the current site.
-+ Remove Sites: Delete saved volume settings for specific sites from the storage.
++ **Volume Slider:** Adjust the volume of media (audio/video) elements on the active page.
++ **Save Site Settings:** Save custom volume levels for specific sites, ensuring they persist across sessions.
++ **Reset Volume:** Reset the volume to either the default value (100%) or the saved value for the current site.
++ **Remove Sites:** Delete saved volume settings for specific sites from the storage.
 
 ## Limitations  
 - The extension's compatibility may vary on websites with highly customized audio or video controllers.
