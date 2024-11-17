@@ -10,26 +10,23 @@ This extension acts as a media controller. If a web page does not have a dedicat
 ![image](https://github.com/user-attachments/assets/218570fb-17f2-4293-ae2a-8f2984391640)
 
 ## Features:
-+ Volume Slider: Adjust the volume of the media (audio/video) elements on the active page.
-+ ~~Mute/Unmute: Toggle the mute state for the media elements.~~
-+ Save Site Settings: Save volume settings for specific sites, so that they persist across sessions.
-+ Reset Volume: Reset the volume to 100% or saved value.
-+ Remove Sites: Remove saved volume settings for specific sites.
++ Volume Slider: Adjust the volume of media (audio/video) elements on the active page.
++ Save Site Settings: Save custom volume levels for specific sites, ensuring they persist across sessions.
++ Reset Volume: Reset the volume to either the default value (100%) or the saved value for the current site.
++ Remove Sites: Delete saved volume settings for specific sites from the storage.
 
 ## Limitations  
-- Compatibility may vary on websites with highly customized audio or video controllers. 
+- The extension's compatibility may vary on websites with highly customized audio or video controllers.
 
 ## TODO:
-+ Jump to any tab that is playing audio (Maybe)
-+ ~~Boost the volume up to 300%~~ (This feature will not be implemented because enabling volume boosting interferes with fullscreen functionality.)
-+ ~~Add extra bass to your music with a bass boost feature~~ (This feature will not be implemented)
-+ ~~Complete UI overhaul~~
-+ ~~Dark mode~~
++ Option to jump to any tab currently playing audio (Pending consideration).
++ ~~Boost the volume up to 300%~~ (Will not be implemented as it interferes with fullscreen functionality).
++ ~~Bass Boost~~ (Will not be implemented).
++ ~~Complete UI redesign~~ (Completed).
++ ~~Dark Mode~~ (Completed).
 
 ## Known issues:
-+ ~~If there is new media playing on Instagram media volume resets to 100.~~
-+ ~~Sometimes percentage shows very long numbers after the point.~~
-+ ~~Percentage text moves with input.~~
-+ ~~Reset button not setting volume to saved values.~~
-+ ~~Mute button resets itself if page unfocused and focused again.~~ (This feature will not be implemented)
-+ ~~Mute button's and percentage text doesn't change when media is muted.~~
++ ~~Volume resets to 100% when new media plays on Instagram.~~
++ ~~Volume percentage occasionally displays overly long decimal numbers.~~
++ ~~Percentage text shifts position when adjusting the slider.~~
++ ~~Reset button does not correctly apply saved volume values.~~
