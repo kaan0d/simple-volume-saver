@@ -4,23 +4,59 @@
   <meta charset="UTF-8">
   <title>Simple Volume Saver</title>
   <link rel="stylesheet" href="popup.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="main-background text-white p-4">
-    <h2 class="fs-5 fw-bold">Simple Volume Saver</h2>
-    <div class="mb-3 d-flex align-items-center">
-      <input type="range" id="volumeSlider" min="0" max="100" value="100" step="1" class="form-range flex-grow-1">
-      <span id="volumeDisplay" class="fs-6 fw-light ms-auto text-end" style="min-width: 50px;">100%</span>
-    </div>    
-    <div class="mt-4">
-      <div class="d-flex align-items-center">
-        <h3 class="fs-6 fw-light mt-1">Saved sites</h3>
-        <button id="resetVolumeBtn" class="btn btn-outline-secondary btn-sm wider-button ms-auto">Reset Volume</button>
-        <button id="addSiteBtn" class="btn btn-outline-light btn-sm wide-button ms-auto">Add</button>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <img src="icons/low-volume-48.png" alt="" class="brand-icon">
+        <h1>Volume Saver</h1>
       </div>
-      <ul id="siteList" class="list-group mt-2 text-small fw-light"></ul>
-    </div>
+      <button id="themeToggle" class="icon-btn" type="button" title="Toggle theme" aria-label="Toggle theme">
+        <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <section class="card volume-card">
+      <div class="site-label" id="siteLabel">&nbsp;</div>
+      <div class="volume-row">
+        <svg class="icon icon-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9"></polygon>
+          <path d="M17 8a5 5 0 0 1 0 8"></path>
+        </svg>
+        <input type="range" id="volumeSlider" min="0" max="100" value="100" step="1" aria-label="Volume">
+        <span id="volumeDisplay" class="volume-value">100%</span>
+      </div>
+      <div class="volume-actions">
+        <button id="resetVolumeBtn" class="btn btn-ghost" type="button">Reset</button>
+        <button id="addSiteBtn" class="btn btn-primary" type="button">Save site</button>
+      </div>
+      <p id="unsupportedNotice" class="unsupported-notice hidden">This page can't be controlled by the extension.</p>
+    </section>
+
+    <section class="card sites-card">
+      <div class="sites-header">
+        <h2>Saved sites</h2>
+        <span id="siteCount" class="badge">0</span>
+      </div>
+      <ul id="siteList" class="site-list"></ul>
+      <p id="emptyState" class="empty-state">No sites saved yet. Adjust the slider and hit&nbsp;<strong>Save site</strong>.</p>
+    </section>
+
+    <footer class="app-footer">
+      <div class="signature" title="Made by Kaan">
+        <span class="wave-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        <span class="signature-text">KD</span>
+      </div>
+    </footer>
   </div>
 
   <script src="popup.js"></script>

@@ -46,3 +46,6 @@ This extension acts as a media controller. If a web page does not have a dedicat
 + ~~Volume percentage occasionally displays overly long decimal numbers.~~
 + ~~Percentage text shifts position when adjusting the slider.~~
 + ~~Reset button does not correctly apply saved volume values.~~
++ ~~Site matching used substring comparison, so a saved site could match unrelated domains that merely contained its name.~~
++ ~~Popup crashed on unsupported pages (`chrome://`, new tab) instead of disabling controls.~~
++ ~~Repeated navigation/audio events on the same page stacked duplicate `MutationObserver`s and `play` listeners.~~

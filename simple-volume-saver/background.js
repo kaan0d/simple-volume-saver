@@ -20,66 +20,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
-    handleTabAudio(tabId, tab);
-  }
-});
+const INJECTABLE_PROTOCOLS = new Set(['http:', 'https:']);
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.audible !== undefined) {
+  if (changeInfo.status === 'complete' || changeInfo.audible !== undefined) {
     handleTabAudio(tabId, tab);
   }
 });
 
 function handleTabAudio(tabId, tab) {
+  if (!tab || !tab.url) return;
+
+  let url;
+  try {
+    url = new URL(tab.url);
+  } catch {
+    return;
+  }
+  if (!INJECTABLE_PROTOCOLS.has(url.protocol)) return;
+
   chrome.storage.sync.get(['siteList'], (data) => {
+    if (chrome.runtime.lastError) return;
+
     const siteList = data.siteList || {};
-    
-    for (let site in siteList) {
-      if (tab.url.includes(site)) {
-        const volume = siteList[site];
-        
-        chrome.scripting.executeScript({
-          target: { tabId: tabId },
-          func: (volume) => {
-            const setMediaVolume = (mediaElements) => {
-              mediaElements.forEach(media => {
-                if (!media.paused || media.currentTime > 0) {
-                  media.volume = volume / 100;
-                }
-              });
-            };
+    const volume = siteList[url.origin];
+    if (volume === undefined) return;
 
-            setMediaVolume(document.querySelectorAll("video, audio"));
-
-            const observer = new MutationObserver((mutations) => {
-              const mediaElements = document.querySelectorAll("video, audio");
-              if (mediaElements.length > 0) {
-                setMediaVolume(mediaElements);
-              }
-            });
-
-            observer.observe(document.body, {
-              childList: true,
-              subtree: true
-            });
-
-            document.addEventListener('play', (event) => {
-              if (event.target.tagName === 'VIDEO' || event.target.tagName === 'AUDIO') {
-                event.target.volume = volume / 100;
-              }
-            }, true);
-
-            window.addEventListener('unload', () => {
-              observer.disconnect();
-            });
-          },
-          args: [volume]
-        });
-        
-        break;
-      }
-    }
+    chrome.scripting.executeScript({
+      target: { tabId },
+      func: applyVolumeToPage,
+      args: [volume]
+    }).catch(() => {
+      // Tab navigated away or scripting was rejected; nothing to recover.
+    });
   });
+}
+
+// Injected into the page. Idempotent: safe to call again on every
+// navigation/audio event without stacking duplicate observers or listeners.
+function applyVolumeToPage(volumePercent) {
+  window.__svsVolume = volumePercent / 100;
+
+  const applyToAll = () => {
+    document.querySelectorAll('video, audio').forEach((media) => {
+      media.volume = window.__svsVolume;
+    });
+  };
+
+  applyToAll();
+
+  if (window.__svsInitialized) return;
+  window.__svsInitialized = true;
+
+  const observer = new MutationObserver(applyToAll);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  document.addEventListener('play', (event) => {
+    const tag = event.target.tagName;
+    if (tag === 'VIDEO' || tag === 'AUDIO') {
+      event.target.volume = window.__svsVolume;
+    }
+  }, true);
 }
