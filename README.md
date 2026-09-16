@@ -2,6 +2,29 @@
 
 A Chrome extension for controlling and remembering per-site audio volume. Drag a single glowing fader to set the level, watch it react live to whatever is actually playing in the tab, and it restores that level automatically every time you come back to the site.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td>
+      <img src="" width="200" alt="Add Volume tab screenshot link here">
+      <p align="center"><b>Volume tab</b></p>
+    </td>
+    <td>
+      <img src="" width="200" alt="Add Saved Sites tab screenshot link here">
+      <p align="center"><b>Saved Sites tab</b></p>
+    </td>
+    <td>
+      <img src="" width="200" alt="Add Light mode screenshot link here">
+      <p align="center"><b>Light mode</b></p>
+    </td>
+    <td>
+      <img src="" width="200" alt="Add Dark mode screenshot link here">
+      <p align="center"><b>Dark mode</b></p>
+    </td>
+  </tr>
+</table>
+
 ## How it works
 
 - Reads and sets the volume of `<video>`/`<audio>` elements on the active tab directly, independent of the page's own volume control.
