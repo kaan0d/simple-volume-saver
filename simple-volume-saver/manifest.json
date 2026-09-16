@@ -3,7 +3,7 @@
     "name": "Simple Volume Saver",
     "description": "Automatically lowers volume on selected sites, with manual controls and preset options.",
     "version": "0.4",
-    "permissions": ["tabs", "storage", "activeTab", "scripting"],
+    "permissions": ["tabs", "storage", "activeTab", "scripting", "tabCapture"],
     "action": {
       "default_popup": "popup.html",
       "default_icon": "icons/low-volume-16.png"
