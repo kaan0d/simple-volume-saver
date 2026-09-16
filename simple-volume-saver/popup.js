@@ -21,10 +21,13 @@
 // SOFTWARE.
 
 const INJECTABLE_PROTOCOLS = new Set(['http:', 'https:']);
-const SITES_COLLAPSED_LIMIT = 5;
 const WAVE_BAR_COUNT = 24;
 const WAVE_MAX_HEIGHT = 140;
 const QUIET_THRESHOLD = 20;
+// Keeps the line's ±12px hit-area (see .wave-line::before) and its arrow
+// hints fully inside .wave-control's clipped bounds, even at 0%/100%.
+const WAVE_LINE_MARGIN = 12;
+const WAVE_LINE_TRAVEL = WAVE_MAX_HEIGHT - WAVE_LINE_MARGIN * 2;
 
 function buildWaveBars(container, count) {
   container.innerHTML = '';
@@ -131,16 +134,34 @@ function initTheme() {
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
 
+  const tabBtnMain = document.getElementById('tabBtnMain');
+  const tabBtnSites = document.getElementById('tabBtnSites');
+  const pageMain = document.getElementById('pageMain');
+  const pageSites = document.getElementById('pageSites');
+
+  const activateTab = (tab) => {
+    const isMain = tab === 'main';
+    tabBtnMain.setAttribute('aria-selected', String(isMain));
+    tabBtnSites.setAttribute('aria-selected', String(!isMain));
+    pageMain.classList.toggle('hidden', !isMain);
+    pageSites.classList.toggle('hidden', isMain);
+  };
+
+  tabBtnMain.addEventListener('click', () => activateTab('main'));
+  tabBtnSites.addEventListener('click', () => activateTab('sites'));
+
   const waveControlEl = document.getElementById('waveControl');
   const waveLineEl = document.getElementById('waveLine');
   const volDisplay = document.getElementById('volumeDisplay');
   const addSiteBtn = document.getElementById('addSiteBtn');
   const resetVolumeBtn = document.getElementById('resetVolumeBtn');
+  const removeSiteBtn = document.getElementById('removeSiteBtn');
   const siteListEl = document.getElementById('siteList');
   const siteCountEl = document.getElementById('siteCount');
   const emptyStateEl = document.getElementById('emptyState');
   const siteLabelEl = document.getElementById('siteLabel');
   const unsupportedNoticeEl = document.getElementById('unsupportedNotice');
+  const deleteAllRow = document.getElementById('deleteAllRow');
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -174,7 +195,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const setVolumeValue = (value) => {
     currentVolume = Math.max(0, Math.min(100, Math.round(value)));
     volDisplay.textContent = `${currentVolume}%`;
-    waveLineEl.style.setProperty('--wave-line-y', `${((100 - currentVolume) / 100) * WAVE_MAX_HEIGHT}px`);
+    const lineY = WAVE_LINE_MARGIN + ((100 - currentVolume) / 100) * WAVE_LINE_TRAVEL;
+    waveLineEl.style.setProperty('--wave-line-y', `${lineY}px`);
     waveLineEl.setAttribute('aria-valuenow', String(currentVolume));
     const isQuiet = currentVolume < QUIET_THRESHOLD;
     waveControlEl.classList.toggle('is-quiet', isQuiet);
@@ -205,12 +227,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const updateVolumeDisplay = async () => {
     if (!isSupported) {
       setVolumeValue(100);
+      removeSiteBtn.classList.add('hidden');
       return;
     }
 
     chrome.storage.sync.get(['siteList'], async (data) => {
       const siteList = data.siteList || {};
       const saved = siteList[tabUrl.origin];
+      removeSiteBtn.classList.toggle('hidden', saved === undefined);
 
       if (saved !== undefined) {
         setVolumeValue(saved);
@@ -242,7 +266,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const volumeFromPointer = (clientY) => {
     const rect = waveControlEl.getBoundingClientRect();
-    const fraction = 1 - (clientY - rect.top) / rect.height;
+    const y = clientY - rect.top - WAVE_LINE_MARGIN;
+    const fraction = 1 - y / WAVE_LINE_TRAVEL;
     return Math.round(Math.max(0, Math.min(1, fraction)) * 100);
   };
 
@@ -295,7 +320,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.storage.sync.get(['siteList'], (data) => {
       const siteList = data.siteList || {};
       siteList[tabUrl.origin] = currentVolume;
-      chrome.storage.sync.set({ siteList }, displaySites);
+      chrome.storage.sync.set({ siteList }, () => {
+        removeSiteBtn.classList.remove('hidden');
+        displaySites();
+      });
+    });
+  });
+
+  removeSiteBtn.addEventListener('click', () => {
+    if (!isSupported) return;
+    chrome.storage.sync.get(['siteList'], (data) => {
+      const siteList = data.siteList || {};
+      delete siteList[tabUrl.origin];
+      chrome.storage.sync.set({ siteList }, () => {
+        removeSiteBtn.classList.add('hidden');
+        displaySites();
+      });
     });
   });
 
@@ -345,11 +385,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const removeBtn = createRemoveButton(() => {
       delete siteList[site];
-      chrome.storage.sync.set({ siteList }, displaySites);
+      chrome.storage.sync.set({ siteList }, () => {
+        if (isSupported && tabUrl && site === tabUrl.origin) {
+          removeSiteBtn.classList.add('hidden');
+        }
+        displaySites();
+      });
     });
 
     li.append(info, removeBtn);
     return li;
+  }
+
+  function renderDeleteAllButton() {
+    deleteAllRow.innerHTML = '';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-danger';
+    btn.textContent = 'Delete all saved sites';
+    btn.addEventListener('click', renderDeleteAllConfirm);
+    deleteAllRow.appendChild(btn);
+  }
+
+  function renderDeleteAllConfirm() {
+    deleteAllRow.innerHTML = '';
+    const confirmRow = document.createElement('div');
+    confirmRow.className = 'confirm-row';
+
+    const yesBtn = document.createElement('button');
+    yesBtn.type = 'button';
+    yesBtn.className = 'btn btn-danger';
+    yesBtn.textContent = 'Yes, delete all';
+    yesBtn.addEventListener('click', () => {
+      chrome.storage.sync.set({ siteList: {} }, () => {
+        removeSiteBtn.classList.add('hidden');
+        displaySites();
+      });
+    });
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'btn btn-ghost';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', renderDeleteAllButton);
+
+    confirmRow.append(yesBtn, cancelBtn);
+    deleteAllRow.appendChild(confirmRow);
   }
 
   function displaySites() {
@@ -360,86 +441,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       siteListEl.innerHTML = '';
       siteCountEl.textContent = sites.length;
       emptyStateEl.classList.toggle('hidden', sites.length > 0);
+      deleteAllRow.classList.toggle('hidden', sites.length === 0);
 
-      let footer = siteListEl.nextElementSibling;
-      if (footer && footer.classList.contains('list-footer')) {
-        footer.remove();
-      }
+      sites.forEach(([site, volume]) => {
+        siteListEl.appendChild(buildSiteRow(site, volume, siteList));
+      });
 
-      if (sites.length === 0) return;
-
-      let isExpanded = false;
-      let isConfirmingDelete = false;
-
-      const render = () => {
-        siteListEl.innerHTML = '';
-        const visible = isExpanded ? sites : sites.slice(0, SITES_COLLAPSED_LIMIT);
-        visible.forEach(([site, volume]) => {
-          siteListEl.appendChild(buildSiteRow(site, volume, siteList));
-        });
-
-        const existingFooter = siteListEl.nextElementSibling;
-        if (existingFooter && existingFooter.classList.contains('list-footer')) {
-          existingFooter.remove();
-        }
-        const existingConfirm = document.querySelector('.confirm-row');
-        if (existingConfirm) existingConfirm.remove();
-
-        if (isConfirmingDelete) {
-          const confirmRow = document.createElement('div');
-          confirmRow.className = 'confirm-row';
-
-          const yesBtn = document.createElement('button');
-          yesBtn.type = 'button';
-          yesBtn.className = 'btn btn-danger';
-          yesBtn.textContent = 'Yes, remove all';
-          yesBtn.addEventListener('click', () => {
-            chrome.storage.sync.set({ siteList: {} }, displaySites);
-          });
-
-          const cancelBtn = document.createElement('button');
-          cancelBtn.type = 'button';
-          cancelBtn.className = 'btn btn-ghost';
-          cancelBtn.textContent = 'Cancel';
-          cancelBtn.addEventListener('click', () => {
-            isConfirmingDelete = false;
-            render();
-          });
-
-          confirmRow.append(yesBtn, cancelBtn);
-          siteListEl.insertAdjacentElement('afterend', confirmRow);
-          return;
-        }
-
-        const listFooter = document.createElement('div');
-        listFooter.className = 'list-footer';
-
-        if (sites.length > SITES_COLLAPSED_LIMIT) {
-          const toggleBtn = document.createElement('button');
-          toggleBtn.type = 'button';
-          toggleBtn.className = 'btn btn-ghost';
-          toggleBtn.textContent = isExpanded ? 'Show less' : `Show all (${sites.length})`;
-          toggleBtn.addEventListener('click', () => {
-            isExpanded = !isExpanded;
-            render();
-          });
-          listFooter.appendChild(toggleBtn);
-        }
-
-        const removeAllBtn = document.createElement('button');
-        removeAllBtn.type = 'button';
-        removeAllBtn.className = 'btn btn-danger';
-        removeAllBtn.textContent = 'Remove all';
-        removeAllBtn.addEventListener('click', () => {
-          isConfirmingDelete = true;
-          render();
-        });
-        listFooter.appendChild(removeAllBtn);
-
-        siteListEl.insertAdjacentElement('afterend', listFooter);
-      };
-
-      render();
+      if (sites.length > 0) renderDeleteAllButton();
     });
   }
 
