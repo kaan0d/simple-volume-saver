@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Simple Volume Saver",
     "description": "Automatically lowers volume on selected sites, with manual controls and preset options.",
-    "version": "0.3",
+    "version": "0.4",
     "permissions": ["tabs", "storage", "activeTab", "scripting"],
     "action": {
       "default_popup": "popup.html",
