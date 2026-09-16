@@ -25,14 +25,25 @@
 
     <section class="card volume-card">
       <div class="site-label" id="siteLabel">&nbsp;</div>
-      <div class="volume-row">
-        <svg class="icon icon-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="4 9 8 9 12 5 12 19 8 15 4 15 4 9"></polygon>
-          <path d="M17 8a5 5 0 0 1 0 8"></path>
-        </svg>
-        <input type="range" id="volumeSlider" min="0" max="100" value="100" step="1" aria-label="Volume">
-        <span id="volumeDisplay" class="volume-value">100%</span>
+
+      <div class="wave-control" id="waveControl">
+        <span id="volumeDisplay" class="volume-value-bg" aria-hidden="true">100%</span>
+        <span id="waveBars" class="wave-bars" aria-hidden="true"></span>
+        <div
+          id="waveLine"
+          class="wave-line"
+          role="slider"
+          tabindex="0"
+          aria-label="Volume"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="100"
+        >
+          <span class="wave-line-arrow wave-line-arrow-up" aria-hidden="true"></span>
+          <span class="wave-line-arrow wave-line-arrow-down" aria-hidden="true"></span>
+        </div>
       </div>
+
       <div class="volume-actions">
         <button id="resetVolumeBtn" class="btn btn-ghost" type="button">Reset</button>
         <button id="addSiteBtn" class="btn btn-primary" type="button">Save site</button>
@@ -46,17 +57,8 @@
         <span id="siteCount" class="badge">0</span>
       </div>
       <ul id="siteList" class="site-list"></ul>
-      <p id="emptyState" class="empty-state">No sites saved yet. Adjust the slider and hit&nbsp;<strong>Save site</strong>.</p>
+      <p id="emptyState" class="empty-state">No sites saved yet. Set a level above and hit&nbsp;<strong>Save site</strong>.</p>
     </section>
-
-    <footer class="app-footer">
-      <div class="signature" title="Made by Kaan">
-        <span class="wave-bars" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-        </span>
-        <span class="signature-text">KD</span>
-      </div>
-    </footer>
   </div>
 
   <script src="popup.js"></script>

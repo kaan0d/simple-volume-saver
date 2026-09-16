@@ -132,66 +132,157 @@ html[data-theme="light"] .icon-moon {
   white-space: nowrap;
 }
 
-.volume-row {
+.wave-control {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.volume-value-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.icon-volume {
-  color: var(--text-muted);
-}
-
-#volumeSlider {
-  flex: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--fill, 100%), var(--surface-2) var(--fill, 100%), var(--surface-2) 100%);
-  outline: none;
-  cursor: pointer;
-}
-
-#volumeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent-contrast);
-  border: 2px solid var(--accent);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-#volumeSlider::-webkit-slider-thumb:hover,
-#volumeSlider::-webkit-slider-thumb:active {
-  transform: scale(1.15);
-}
-
-#volumeSlider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent-contrast);
-  border: 2px solid var(--accent);
-  cursor: pointer;
-}
-
-#volumeSlider::-moz-range-track {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--surface-2);
-}
-
-.volume-value {
-  min-width: 42px;
-  text-align: right;
+  justify-content: center;
   font-variant-numeric: tabular-nums;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  opacity: 0.28;
+  text-shadow:
+    0 0 10px color-mix(in srgb, var(--accent) 85%, transparent),
+    0 0 28px color-mix(in srgb, var(--accent) 65%, transparent),
+    0 0 52px color-mix(in srgb, var(--accent) 40%, transparent);
+  pointer-events: none;
+  transition: opacity 0.3s ease, text-shadow 0.35s ease;
+}
+
+.wave-control.is-quiet .volume-value-bg {
+  opacity: 0.16;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--text-muted) 50%, transparent);
+}
+
+.wave-bars {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3px;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 55%, transparent));
+  transition: filter 0.35s ease;
+}
+
+.wave-bars.is-quiet {
+  filter: none;
+}
+
+.wave-bars span {
+  flex: 1;
+  height: 3px;
+  min-height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(to top, var(--accent), var(--accent-hover));
+  transition: height 0.09s ease-out, background 0.35s ease;
+}
+
+.wave-bars.is-quiet span {
+  background: linear-gradient(to top, var(--text-muted), var(--border));
+  transition-duration: 0.3s;
+}
+
+.wave-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1.5px;
+  z-index: 2;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 6px 1px color-mix(in srgb, var(--accent) 90%, transparent),
+    0 0 16px 4px color-mix(in srgb, var(--accent) 65%, transparent),
+    0 0 32px 10px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 0 56px 18px color-mix(in srgb, var(--accent) 20%, transparent);
+  cursor: ns-resize;
+  transform: translateY(var(--wave-line-y, 0px));
+  transition: transform 0.05s linear, background 0.35s ease, box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.wave-line:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wave-line.dragging {
+  transition: none;
+}
+
+.wave-line::before {
+  content: "";
+  position: absolute;
+  inset: -12px 0;
+}
+
+.wave-line-arrow {
+  position: absolute;
+  right: 9px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  opacity: 0.65;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+  transition: opacity 0.2s ease, border-color 0.35s ease;
+}
+
+.wave-line-arrow-up {
+  bottom: 6px;
+  border-width: 0 6px 9px 6px;
+  border-bottom-color: #ffffff;
+}
+
+.wave-line-arrow-down {
+  top: 6px;
+  border-width: 9px 6px 0 6px;
+  border-top-color: #ffffff;
+}
+
+.wave-line:hover .wave-line-arrow,
+.wave-line.dragging .wave-line-arrow {
+  opacity: 1;
+}
+
+.wave-control.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+.wave-control.is-quiet .wave-line {
+  background: var(--text-muted);
+  box-shadow: 0 0 4px 1px color-mix(in srgb, var(--text-muted) 50%, transparent);
+}
+
+.wave-control.is-quiet .wave-line-arrow-up {
+  border-bottom-color: var(--text-muted);
+}
+
+.wave-control.is-quiet .wave-line-arrow-down {
+  border-top-color: var(--text-muted);
 }
 
 .volume-actions {
@@ -375,67 +466,4 @@ html[data-theme="light"] .icon-moon {
 
 .btn-danger:hover:not(:disabled) {
   opacity: 0.9;
-}
-
-.app-footer {
-  display: flex;
-  justify-content: center;
-  padding-top: 2px;
-}
-
-.signature {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 4px 12px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: default;
-  transition: color 0.2s ease;
-}
-
-.signature:hover {
-  color: var(--accent);
-}
-
-.signature-text {
-  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-  font-style: italic;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  opacity: 1;
-  transition: opacity 0.2s ease;
-}
-
-.signature:hover .signature-text {
-  opacity: 0;
-}
-
-.wave-bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 13px;
-}
-
-.wave-bars span {
-  width: 2px;
-  height: 3px;
-  border-radius: 1px;
-  background: currentColor;
-  transform-origin: bottom;
-  animation: wave-bounce 0.9s ease-in-out infinite;
-}
-
-.wave-bars span:nth-child(1) { animation-delay: 0s; }
-.wave-bars span:nth-child(2) { animation-delay: 0.1s; }
-.wave-bars span:nth-child(3) { animation-delay: 0.2s; }
-.wave-bars span:nth-child(4) { animation-delay: 0.3s; }
-.wave-bars span:nth-child(5) { animation-delay: 0.15s; }
-
-@keyframes wave-bounce {
-  0%, 100% { height: 3px; }
-  50% { height: 13px; }
 }
