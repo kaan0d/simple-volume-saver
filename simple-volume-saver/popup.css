@@ -190,6 +190,7 @@ html[data-theme="light"] .icon-moon {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 26px;
   margin-bottom: 14px;
 }
 
@@ -208,15 +209,15 @@ html[data-theme="light"] .icon-moon {
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-  border: none;
-  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface-2));
   color: var(--danger);
   font-size: 11px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 4px 9px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .site-remove-btn .icon {
@@ -225,11 +226,12 @@ html[data-theme="light"] .icon-moon {
 }
 
 .site-remove-btn:hover {
-  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  background: color-mix(in srgb, var(--danger) 24%, var(--surface-2));
+  border-color: var(--danger);
 }
 
 .site-remove-btn.hidden {
-  display: none;
+  visibility: hidden;
 }
 
 .wave-control {
