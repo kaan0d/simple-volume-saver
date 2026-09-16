@@ -1,51 +1,55 @@
-# Simple Volume Saver Chrome Extension
-This Chrome extension allows users to control the audio volume of media (video and audio) elements on web pages. Users can adjust the volume via a slider, view the current volume percentage, and save custom volume settings for specific websites. It also restores saved volume levels automatically whenever the user revisits a site. The extension is designed to work seamlessly unless the website uses highly customized audio controls, which might limit its functionality.
+# Simple Volume Saver
 
-## How It Works  
-This extension acts as a media controller. If a web page does not have a dedicated audio control mechanism, the extension can adjust the volume directly. However, on websites with custom-built audio controllers, the extension may not work as expected due to conflicts with the site's proprietary controls.  
+A Chrome extension for controlling and remembering per-site audio volume. Drag a single glowing fader to set the level, watch it react live to whatever is actually playing in the tab, and it restores that level automatically every time you come back to the site.
 
-<table>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/83ec4e79-e0b4-4a0a-8e98-e50ce854c565" width="200" alt="Main Interface">
-      <p align="center"><b>Main Interface</b></p>
-    </td>
-    <td>
-      <img src="https://github.com/user-attachments/assets/359bf765-e9c1-4d70-a5aa-a6c7f8e324c4" width="200" alt="Saved Sites List">
-      <p align="center"><b>Saved Sites List</b></p>
-    </td>
-    <td>
-      <img src="https://github.com/user-attachments/assets/c7c46e2c-f9a2-47da-8be0-35e1abef8413" width="200" alt="Reset Volume Button">
-      <p align="center"><b>Show more/Hide</b></p>
-    </td>
-    <td>
-      <img src="https://github.com/user-attachments/assets/218570fb-17f2-4293-ae2a-8f2984391640" width="200" alt="Remove All Sites">
-      <p align="center"><b>Remove All Sites</b></p>
-    </td>
-  </tr>
-</table>
+## How it works
 
-## Features:
-+ **Volume Slider:** Adjust the volume of media (audio/video) elements on the active page.
-+ **Save Site Settings:** Save custom volume levels for specific sites, ensuring they persist across sessions.
-+ **Reset Volume:** Reset the volume to either the default value (100%) or the saved value for the current site.
-+ **Remove Sites:** Delete saved volume settings for specific sites from the storage.
+- Reads and sets the volume of `<video>`/`<audio>` elements on the active tab directly, independent of the page's own volume control.
+- A live equalizer, driven by `chrome.tabCapture`, shows the tab's real audio output — not a decorative animation.
+- Save a level per site (matched by origin, e.g. `https://example.com`); saved sites sync via `chrome.storage.sync` across signed-in Chrome profiles.
+- Works even on sites that run their own audio pipeline (YouTube, Spotify, etc.): the visualizer taps the tab's final mixed output rather than the page's internal audio graph, so it isn't blocked by sites that already claim the media element for their own processing.
 
-## Limitations  
-- The extension's compatibility may vary on websites with highly customized audio or video controllers.
+## Features
 
-## TODO:
-+ Option to jump to any tab currently playing audio (Pending consideration).
-+ ~~Boost the volume up to 300%~~ (Will not be implemented as it interferes with fullscreen functionality).
-+ ~~Bass Boost~~ (Will not be implemented).
-+ ~~Complete UI redesign~~ (Completed).
-+ ~~Dark Mode~~ (Completed).
+- **Draggable volume fader** — a glowing line over a live, audio-reactive bar visualizer; drag it (or use arrow keys, Home/End) to set 0–100%.
+- **Live tab audio visualizer** — bars reflect the tab's actual audio output in real time, capped to the current volume ceiling; dims and calms down automatically below 20%.
+- **Save per site** — remembers a volume for the current site's origin and re-applies it automatically on future visits, including to media added after the page loads.
+- **Reset** — restores the saved level for the site, or 100% if none is saved.
+- **Remove saved site** — a one-click control right on the Volume tab whenever the current site already has a saved level, no need to switch tabs.
+- **Saved Sites tab** — the full list of saved sites with per-site removal and a Delete All action (with a confirmation step).
+- **Dark / Light theme** — toggle in the header; defaults to your system theme and remembers your choice.
 
-## Known issues:
-+ ~~Volume resets to 100% when new media plays on Instagram.~~
-+ ~~Volume percentage occasionally displays overly long decimal numbers.~~
-+ ~~Percentage text shifts position when adjusting the slider.~~
-+ ~~Reset button does not correctly apply saved volume values.~~
-+ ~~Site matching used substring comparison, so a saved site could match unrelated domains that merely contained its name.~~
-+ ~~Popup crashed on unsupported pages (`chrome://`, new tab) instead of disabling controls.~~
-+ ~~Repeated navigation/audio events on the same page stacked duplicate `MutationObserver`s and `play` listeners.~~
+## Permissions
+
+- `storage` — saves per-site volume levels and your theme preference.
+- `scripting`, `activeTab`, `host_permissions` (`<all_urls>`) — reads and sets `<video>`/`<audio>` volume on the active page, and re-applies saved levels after navigation.
+- `tabs` — detects when a tab starts or stops playing audio, to re-apply a saved level.
+- `tabCapture` — powers the live visualizer only. Audio is analyzed in memory and immediately routed back to your speakers; nothing is recorded, stored, or sent anywhere.
+
+## Limitations
+
+- Compatibility varies on sites with heavily customized audio/video players.
+- The live visualizer needs a capturable tab (regular `http(s)` pages); it stays idle on internal pages like `chrome://`.
+
+## TODO
+
+- Option to jump to any tab currently playing audio (pending consideration).
+- ~~Boost volume above 100%~~ (won't implement — breaks fullscreen video).
+- ~~Bass boost~~ (won't implement).
+- ~~Complete UI redesign~~ (done).
+- ~~Dark Mode~~ (done).
+- ~~Audio-reactive volume fader~~ (done).
+- ~~Split into Volume / Saved Sites tabs~~ (done).
+
+## Known issues (fixed)
+
+- ~~Volume resets to 100% when new media plays on Instagram.~~
+- ~~Volume percentage occasionally displays overly long decimal numbers.~~
+- ~~Percentage text shifts position when adjusting the slider.~~
+- ~~Reset button does not correctly apply saved volume values.~~
+- ~~Site matching used substring comparison, so a saved site could match unrelated domains that merely contained its name.~~
+- ~~Popup crashed on unsupported pages (`chrome://`, new tab) instead of disabling controls.~~
+- ~~Repeated navigation/audio events on the same page stacked duplicate `MutationObserver`s and `play` listeners.~~
+- ~~A long saved-sites list made the whole popup scroll, dragging the header and controls along with it.~~
+- ~~The fader's drag hit-area and directional hints could get clipped at 0%/100%.~~
+- ~~The "remove saved site" control appearing/disappearing shifted the volume control up and down.~~
