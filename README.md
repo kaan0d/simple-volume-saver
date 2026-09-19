@@ -7,20 +7,16 @@ A Chrome extension for controlling and remembering per-site audio volume. Drag a
 <table>
   <tr>
     <td>
-      <img src="" width="200" alt="Add Volume tab screenshot link here">
+      <img src="screenshots/volume.png" width="200" alt="Volume tab">
       <p align="center"><b>Volume tab</b></p>
     </td>
     <td>
-      <img src="" width="200" alt="Add Saved Sites tab screenshot link here">
+      <img src="screenshots/saved-sites.png" width="200" alt="Saved Sites tab">
       <p align="center"><b>Saved Sites tab</b></p>
     </td>
     <td>
-      <img src="" width="200" alt="Add Light mode screenshot link here">
+      <img src="screenshots/light-mode.png" width="200" alt="Light mode">
       <p align="center"><b>Light mode</b></p>
-    </td>
-    <td>
-      <img src="" width="200" alt="Add Dark mode screenshot link here">
-      <p align="center"><b>Dark mode</b></p>
     </td>
   </tr>
 </table>
